@@ -1,0 +1,48 @@
+#include <iostream>
+
+void selectionSort(int arr[], int n)
+{
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		//let the first be the minimum element
+		int indexOfMin = i;
+		//we start from the next element
+		for (j = i+1; j < n; j++)
+		{
+			//if we find a smaller element, update the minIndex
+			if (arr[j] < arr[indexOfMin])
+			{
+				indexOfMin = j;
+			}
+		}
+		//if we have updated the minIndex, swap the values
+		if (indexOfMin != i)
+		{
+			int tmp = arr[i];
+			arr[i] = arr[indexOfMin];
+			arr[indexOfMin] = tmp;
+		}
+	}
+}
+
+int main()
+{
+	int count;
+	std::cin >> count;
+
+	int *arr = new int[count];
+
+	for (size_t i = 0; i < count; i++)
+	{
+		std::cin >> arr[i];
+	}
+	selectionSort(arr, count);
+	for (size_t i = 0; i < count; i++)
+	{
+		std::cout << arr[i] << " ";
+	}
+
+	system("pause");
+	return 0;
+}
