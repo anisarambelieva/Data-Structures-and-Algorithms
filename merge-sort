@@ -23,12 +23,12 @@ void merge(int arr[], int l, int m, int r)
 
 	i = 0; //initial index of left arr
 	j = 0; //initial index of right arr
-	k = 0; //initial index of result arr
+	k = l; //initial index of result arr
 
 	//return elements in initial array while sorting them
 	while (i < lenleft && j < lenright)
 	{
-		if (left[i] < right[j])
+		if (left[i] <= right[j])
 		{
 			arr[k] = left[i];
 			i++;
@@ -78,7 +78,7 @@ int main()
 		std::cin >> arr[i];
 	}
 
-	mergesort(arr, 0, count-1);
+	mergesort(arr, 0, count - 1);
 
 	for (size_t i = 0; i < count; i++)
 	{
