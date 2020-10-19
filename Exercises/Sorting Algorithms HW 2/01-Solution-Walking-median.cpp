@@ -60,11 +60,4 @@ int main()
         double res = findMedian(arr, i + 1);
         cout << res << endl;
     }
-
-    //insertionSort(arr, n);
-    //
-    //for (int i = 0; i < n; i++)
-    //{
-    //    cout << arr[i] << " ";
-    //}
 }
