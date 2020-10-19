@@ -1,4 +1,3 @@
-# sorting-algorithms
-SDA (FMI) 
+# Data Structures and Algorithms Course at FMI
+Implementations and Exercises
 
-Sorting algorithms with comments for a better understanding
