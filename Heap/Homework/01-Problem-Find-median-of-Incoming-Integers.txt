@@ -1,0 +1,299 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+using namespace std;
+
+class MinHeap
+{
+private:
+    vector<int> data;
+
+    int getLeftChildPosition(int pos)
+    {
+        return (pos * 2) + 1;
+    }
+
+    int getRightChildPosition(int pos)
+    {
+        return (pos * 2) + 2;
+    }
+
+    int getParentPosition(int pos)
+    {
+        return (pos - 1) / 2;
+    }
+
+    void siftUp(int pos)
+    {
+        int parent = getParentPosition(pos);
+
+        while (data[pos] < data[parent])
+        {
+            swap(data[pos], data[parent]);
+            if (parent <= 0)
+            {
+                return;
+            }
+            // move up to check the rest
+            pos = getParentPosition(pos);
+            parent = getParentPosition(parent);
+        }
+    }
+
+    void siftDown(int pos)
+    {
+        int size = this->data.size();
+        bool hasRightChild = getRightChildPosition(pos) < size;
+        bool hasLeftChild = getLeftChildPosition(pos) < size;
+
+        // if the element a right child it for sure has a left one
+        // because we have a complete binary tree
+        if (hasRightChild
+            && (data[pos] > data[getLeftChildPosition(pos)]
+                || data[pos] > data[getRightChildPosition(pos)]))
+        {
+            int swapWith = -1;
+            if (data[getLeftChildPosition(pos)] < data[getRightChildPosition(pos)])
+            {
+                swapWith = getLeftChildPosition(pos);
+            }
+            else
+            {
+                swapWith = getRightChildPosition(pos);
+            }
+
+            swap(data[pos], data[swapWith]);
+            siftDown(swapWith);
+        }
+        else if (hasLeftChild && data[pos] > data[getLeftChildPosition(pos)])
+        {
+            swap(data[pos], data[getLeftChildPosition(pos)]);
+            siftDown(getLeftChildPosition(pos));
+        }
+    }
+
+public:
+    bool isEmpty() const
+    {
+        return this->data.size() == 0;
+    }
+
+    void add(int number)
+    {
+        this->data.push_back(number);
+        this->siftUp(this->data.size() - 1);
+    }
+
+    int peekTop() const
+    {
+        return this->data[0];
+    }
+
+    void popTop()
+    {
+        if (this->isEmpty())
+        {
+            return;
+        }
+
+        swap(this->data[0], this->data[this->data.size() - 1]);
+        this->data.pop_back();
+        siftDown(0);
+    }
+
+    int getCount()
+    {
+        return this->data.size();
+    }
+};
+
+class MaxHeap
+{
+private:
+    vector<int> data;
+
+    int getLeftChildPosition(int pos)
+    {
+        return (pos * 2) + 1;
+    }
+
+    int getRightChildPosition(int pos)
+    {
+        return (pos * 2) + 2;
+    }
+
+    int getParentPosition(int pos)
+    {
+        return (pos - 1) / 2;
+    }
+
+    void siftUp(int pos)
+    {
+        int parent = getParentPosition(pos);
+
+        while (data[pos] > data[parent])
+        {
+            swap(data[pos], data[parent]);
+            if (parent <= 0)
+            {
+                return;
+            }
+            // move up to check the rest
+            pos = getParentPosition(pos);
+            parent = getParentPosition(parent);
+        }
+    }
+
+    void siftDown(int pos)
+    {
+        int size = this->data.size();
+        bool hasRightChild = getRightChildPosition(pos) < size;
+        bool hasLeftChild = getLeftChildPosition(pos) < size;
+
+        // if the element a right child it for sure has a left one
+        // because we have a complete binary tree
+        if (hasRightChild
+            && (data[pos] < data[getLeftChildPosition(pos)]
+                || data[pos] < data[getRightChildPosition(pos)]))
+        {
+            int swapWith = -1;
+            if (data[getLeftChildPosition(pos)] > data[getRightChildPosition(pos)])
+            {
+                swapWith = getLeftChildPosition(pos);
+            }
+            else
+            {
+                swapWith = getRightChildPosition(pos);
+            }
+
+            swap(data[pos], data[swapWith]);
+            siftDown(swapWith);
+        }
+        else if (hasLeftChild && data[pos] < data[getLeftChildPosition(pos)])
+        {
+            swap(data[pos], data[getLeftChildPosition(pos)]);
+            siftDown(getLeftChildPosition(pos));
+        }
+    }
+
+public:
+    bool isEmpty() const
+    {
+        return this->data.size() == 0;
+    }
+
+    void add(int number)
+    {
+        this->data.push_back(number);
+        this->siftUp(this->data.size() - 1);
+    }
+
+    int peekTop() const
+    {
+        return this->data[0];
+    }
+
+    void popTop()
+    {
+        if (this->isEmpty())
+        {
+            return;
+        }
+
+        swap(this->data[0], this->data[this->data.size() - 1]);
+        this->data.pop_back();
+        siftDown(0);
+    }
+
+    int getCount()
+    {
+        return this->data.size();
+    }
+};
+
+double getAverage(int a, int b)
+{
+    return ((double)a + (double)b) / (double)2;
+}
+
+double findMedian(int curr, double& median, MinHeap& rootMin, MaxHeap& rootMax)
+{
+    int balance = rootMax.getCount() - rootMin.getCount();
+
+    // balance is 1 - more elements in max heap
+    if (balance == 1)
+    {
+        // e.g 1 2 3 4 with median 2.5
+        // if we add 5 it goes to the min heap
+        // why? because it's on the right from 4
+        if (curr < median)
+        {
+            int toMove = rootMax.peekTop();
+            rootMin.add(toMove);
+            rootMax.popTop();
+
+            rootMax.add(curr);
+        }
+        else
+        {
+            rootMin.add(curr);
+        }
+
+
+        median = getAverage(rootMin.peekTop(), rootMax.peekTop());
+    }
+    // balance is -1 - more elements in min heap
+    else if (balance == -1)
+    {
+        if (curr > median)
+        {
+            int toMove = rootMin.peekTop();
+            rootMax.add(toMove);
+            rootMin.popTop();
+
+            rootMin.add(curr);
+        }
+        else
+        {
+            rootMax.add(curr);
+        }
+
+        median = getAverage(rootMin.peekTop(), rootMax.peekTop());
+    }
+    // balance is 0 then we have equal amount of elements in both heaps
+    else
+    {
+        if (curr < median)
+        {
+            rootMax.add(curr);
+            median = rootMax.peekTop();
+        }
+        else
+        {
+            rootMin.add(curr);
+            median = rootMin.peekTop();
+        }
+    }
+    return median;
+}
+
+int main()
+{
+    int count;
+    cin >> count;
+
+    MaxHeap maxi;
+    MinHeap mini;
+    double m = 0;
+
+    for (int i = 0; i < count; i++)
+    {
+        int num;
+        cin >> num;
+
+        m = findMedian(num, m, mini, maxi);
+        cout << fixed << setprecision(1);
+
+        cout << m << endl;
+    }
+}
