@@ -4,6 +4,8 @@
 #include <algorithm>
 using namespace std;
 
+// https://www.hackerrank.com/contests/practice-9-sda/challenges/forest-1/problem
+
 struct Pair
 {
     int index;
